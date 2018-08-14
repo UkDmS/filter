@@ -1,5 +1,5 @@
 <?php
-      if(substr_count($link,"apply")>0 && substr_count($link,"prolongatory")>0) {
+            if(substr_count($link,"apply")>0 && substr_count($link,"prolongatory")>0) {
             foreach($linkArray as $item) {
                if(substr_count($item,"collection-is-")>0) {
                     $out['collection'] = str_replace("collection-is-", '', $item);
@@ -8,21 +8,21 @@
                     $out['proizvoditel'] = str_replace("proizvoditel-is-", '', $item);
                }
             }
-            $allValuesCollection = array();
-            $arProperties = CIBlockPropertyEnum::GetList(Array("SORT"=>"ASC", "VALUE"=>"ASC"), Array("IBLOCK_ID" => 38,
-            "PROPERTY_ID" => 222));
+
+            $arProperties = CIBlockPropertyEnum::GetList(
+                Array(  "SORT"=>"ASC",
+                        "VALUE"=>"ASC"),
+                Array(  "IBLOCK_ID" => 38,
+                        "PROPERTY_ID" => 222,
+                        "XML_ID" => $out['collection']));
             while ($arProperty = $arProperties->Fetch()) {
-                $allValuesCollection[$arProperty["VALUE"]] = $arProperty["XML_ID"];
+                $collectionValue = $arProperty["VALUE"];
             }
             $filter = array();
             $temp = array();
-            foreach($allValuesCollection as $elem => $value) {
-                if($out['collection']===$value) {
-                    $temp['name']='Êîëëåêöèÿ';
-                    $temp['value'] = $elem;
-                    array_push($filter,$temp);
-                }
-            }
+            $temp['name']='ÐšÐ¾Ð»Ð»ÐµÐºÑ†Ð¸Ñ';
+            $temp['value'] = $collectionValue;
+            array_push($filter,$temp);
             if (!CModule::IncludeModule('highloadblock'))
                 continue;
 
@@ -32,20 +32,18 @@
             $result = $hlDataClass::getList(array(
                  'select' => array('UF_XML_ID', 'UF_NAME'),
                  'order' => array('UF_NAME' =>'ASC'),
-                 'filter' => array('UF_SORT'=>'100'),
+                 'filter' => array('UF_SORT'=>'100','UF_XML_ID'=>$out['proizvoditel']),
             ));
+
             $allValuesManufacture = array();
+
             while($res = $result->fetch()) {
                 $allValuesManufacture[] = $res;
             }
 
-            foreach($allValuesManufacture as $item) {
-	            if($item['UF_XML_ID']== $out['proizvoditel']) {
-	                $temp['name']='Ïðîèçâîäèòåëü';
-                    $temp['value'] = $item['UF_NAME'];
-                    array_push($filter,$temp);
-	            }
-            }
+            $temp['name']='ÐŸÑ€Ð¾Ð¸Ð·Ð²Ð¾Ð´Ð¸Ñ‚ÐµÐ»ÑŒ';
+            $temp['value'] = $allValuesManufacture[0]['UF_NAME'];
+            array_push($filter,$temp);
 
             $string = '';
             foreach($filter as $elem) {
@@ -54,7 +52,7 @@
             $string = substr($string,0,-2);
             $cp = $this->__component;
             if (is_object($cp)) {
-                $cp->arResult["IPROPERTY_VALUES"]["SECTION_META_TITLE"] = "Êóïèòü | ".$string;
+                $cp->arResult["IPROPERTY_VALUES"]["SECTION_META_TITLE"] = "ÐšÑƒÐ¿Ð¸Ñ‚ÑŒ | ".$string;
                 $cp->arResult["IPROPERTY_VALUES"]["SECTION_META_DESCRIPTION"] = " ".$string;
             }
         }
