@@ -15,13 +15,12 @@
                 Array(  "IBLOCK_ID" => 38,
                         "PROPERTY_ID" => 222,
                         "XML_ID" => $out['collection']));
-            while ($arProperty = $arProperties->Fetch()) {
-                $collectionValue = $arProperty["VALUE"];
-            }
+
+            $collectionValue = $arProperties->Fetch();
             $filter = array();
             $temp = array();
             $temp['name']='Коллекция';
-            $temp['value'] = $collectionValue;
+            $temp['value'] = $collectionValue["VALUE"];
             array_push($filter,$temp);
             if (!CModule::IncludeModule('highloadblock'))
                 continue;
@@ -35,14 +34,10 @@
                  'filter' => array('UF_SORT'=>'100','UF_XML_ID'=>$out['proizvoditel']),
             ));
 
-            $allValuesManufacture = array();
-
-            while($res = $result->fetch()) {
-                $allValuesManufacture[] = $res;
-            }
+            $allValuesManufacture = $result->fetch();
 
             $temp['name']='Производитель';
-            $temp['value'] = $allValuesManufacture[0]['UF_NAME'];
+            $temp['value'] = $allValuesManufacture['UF_NAME'];
             array_push($filter,$temp);
 
             $string = '';
