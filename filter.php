@@ -1,4 +1,8 @@
 <?
+Cmodule::IncludeModule('iblock');
+    $currentPageUrl = $APPLICATION->GetCurPage();
+    $link = (isset($_SERVER['HTTPS']) ? "https" : "http") . "://".$_SERVER["SERVER_NAME"].$currentPageUrl;
+    $linkArray = explode("/",$link);
  if(substr_count($link,"apply")>0) {
             $re = '/\d+/m';
             $re_d = '/(\d.\d)/';
